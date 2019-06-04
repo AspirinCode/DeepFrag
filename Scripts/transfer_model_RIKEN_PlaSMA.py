@@ -17,9 +17,9 @@ from DeepFrag.utils import load_model, ms_correlation
 from DeepFrag.utils import read_ms, morgan_fp, ms2vec, model_predict, plot_compare_ms
 from DeepFrag.loss import pearson, loss
 
-pretrain_model = 'simulated_20V'
+pretrain_model = 'simulated_Pos_10V'
 model = load_model(pretrain_model)
-msp_file = 'RIKEN_PlaSMA/RIKEN_PlaSMA.msp'
+msp_file = 'RIKEN_PlaSMA/RIKEN_PlaSMA_Pos.msp'
 
 # parser dataset
 ms = []
@@ -51,13 +51,13 @@ for i, (params, data) in enumerate(parser):
 summary = pd.DataFrame({'smiles': smiles, 'ion_mode': modes, 'energy': energies})
 
 # split dataset
-test_index = np.random.choice(range(len(ms)), int(0.1 * len(ms)), replace=False)
+test_index = np.random.choice(range(len(ms)), int(0.05 * len(ms)), replace=False)
 train_index = [i for i in range(len(ms)) if i not in test_index]
-np.save('Temp/fiehn_train_index', train_index)
-np.save('Temp/fiehn_test_index', test_index)
+np.save('Temp/RIKEN_train_index', train_index)
+np.save('Temp/RIKEN_test_index', test_index)
 '''
-train_index = np.load('Temp/fiehn_train_index.npy')
-test_index = np.load('Temp/fiehn_test_index.npy')
+train_index = np.load('Temp/RIKEN_train_index.npy')
+test_index = np.load('Temp/RIKEN_test_index.npy')
 '''
 
 # train model
@@ -93,12 +93,12 @@ plt.legend(['train forward', 'train reverse', 'test forward', 'test reverse'], l
 plt.show()
 
 model_json = model.to_json()
-save_path = 'Model/RIKEN_PlaSMA'
+save_path = 'Model/RIKEN_PlaSMA_Pos_10'
 with open(save_path + '.json', "w") as json_file:
     json_file.write(model_json)
 model.save_weights(save_path + '.h5')
 
-result = pd.DataFrame(columns = ['idx', 'smiles', 'DeepFrag', 'CFM_20', 'CFM_40'])
+result = pd.DataFrame(columns = ['idx', 'smiles', 'DeepFrag', 'CFM_10', 'CFM_20', 'CFM_40'])
 for i in tqdm(test_index):
     try:
         smi = smiles[i]
@@ -106,6 +106,7 @@ for i in tqdm(test_index):
         ms_real = ms[i]
         ms_pred = model_predict(smi, model)
         trans = ms_correlation(ms_real, ms_pred)
+        cfm_10 = ms_correlation(ms_real, ms_cfm['low_energy'])
         cfm_20 = ms_correlation(ms_real, ms_cfm['medium_energy'])
         cfm_40 = ms_correlation(ms_real, ms_cfm['high_energy'])
     except:
@@ -114,5 +115,5 @@ for i in tqdm(test_index):
     plot_compare_ms(ms_real, ms_cfm['medium_energy'])
     plot_compare_ms(ms_real, ms_pred)
     '''
-    result.loc[len(result)] = [i, smi, trans, cfm_20, cfm_40]
-result.to_csv('Result/RIKEN_PlaSMA.csv')
+    result.loc[len(result)] = [i, smi, trans, cfm_10, cfm_20, cfm_40]
+result.to_csv('Result/RIKEN_PlaSMA_Pos_10.csv')

@@ -43,9 +43,9 @@ def parser_msp(ms, output, energy):
         hf.create_dataset("output_forward",  data=output_forward)
         hf.create_dataset("output_reverse",  data=output_reverse)
 
-parser_msp(ms=mine_1, output='Data/MINE_KEGG.h5', energy='40 V')
-parser_msp(ms=mine_2, output='Data/MINE_EC.h5', energy='40 V')
-parser_msp(ms=mine_3, output='Data/MINE_YMDB.h5', energy='40 V')
+parser_msp(ms=mine_1, output='Data/MINE_KEGG.h5', energy='10 V')
+parser_msp(ms=mine_2, output='Data/MINE_EC.h5', energy='10 V')
+parser_msp(ms=mine_3, output='Data/MINE_YMDB.h5', energy='10 V')
 
 # import dataset
 with h5py.File('Data/MINE_KEGG.h5', 'r') as hf:
@@ -92,19 +92,20 @@ plt.plot(history.history['regr_forward_pearson'])
 plt.plot(history.history['regr_reverse_pearson'])
 plt.plot(history.history['val_regr_forward_pearson'])
 plt.plot(history.history['val_regr_reverse_pearson'])
-plt.title('pearson correlation')
 plt.ylabel('pearson correlation')
 plt.xlabel('epoch')
-plt.legend(['train forward', 'train reverse', 'test forward', 'test reverse'], loc='upper left')
+plt.legend(['train forward', 'train reverse', 'test forward', 'test reverse'], loc='lower right')
 plt.show()
 
 model_json = model.to_json()
-save_path = 'Model/simulated_40V'
+save_path = 'Model/simulated_10V'
 with open(save_path + '.json', "w") as json_file:  
     json_file.write(model_json)
 model.save_weights(save_path + '.h5')
 
+'''
 test_smi = 'C1=C(NC=N1)C[C@@H](C(=O)O)N'
 real_ms = read_ms('E:/project/DeepMASS/data/spectra/simulated_spectra/40V/C00135.csv')
 pred_ms = model_predict(test_smi, model)
 plot_compare_ms(real_ms, pred_ms)
+'''
