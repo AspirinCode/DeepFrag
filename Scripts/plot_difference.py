@@ -17,9 +17,12 @@ from PyCFMID.PyCFMID import cfm_predict, fraggraph_gen
 from DeepFrag.utils import load_model, ms_correlation
 from DeepFrag.utils import read_ms, morgan_fp, ms2vec, model_predict, plot_compare_ms
 from DeepFrag.loss import pearson, loss
+from DeepFrag.annotate import annotate_ms
 
 msp_file = 'RIKEN_PlaSMA/RIKEN_PlaSMA_Pos.msp'
 model = load_model('RIKEN_PlaSMA_Pos_30')
+result = pd.read_csv('Result/RIKEN_PlaSMA_Pos_30.csv')
+
 # parser dataset
 ms = []
 smiles = []
@@ -42,18 +45,18 @@ for i, (params, data) in enumerate(parser):
 
     if energy != '30':
         continue
-
+    data = pd.DataFrame(np.array(data))
+    data.columns = ['mz', 'intensity']
     modes.append(ion_mode)
     ms.append(data)
     smiles.append(smi)
     energies.append(energy)
 summary = pd.DataFrame({'smiles': smiles, 'ion_mode': modes, 'energy': energies})
 
-idx = 283
+idx = 1
 smi = smiles[idx]
 ms_pred = model_predict(smi, model)
+ms_anno = annotate_ms(ms_pred, smi)
 ms_real = ms[idx]
 plot_compare_ms(ms_real, ms_pred)
 
-ms_cfm = cfm_predict(smi)
-fraggraph = fraggraph_gen(smi)
