@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Jun 15 08:34:12 2019
+Created on Sun Jun 16 10:24:50 2019
 
 @author: hcji
 """
-
 
 import numpy as np
 import pandas as pd
@@ -28,10 +27,10 @@ robjects.r('''source('DeepFrag/metfrag.R')''')
 generateFragments = robjects.globalenv['generateFragments']
 
 
-msp_file = 'RIKEN_PlaSMA/RIKEN_PlaSMA_Pos.msp'
-model = load_model('RIKEN_PlaSMA_Pos_10')
-pretrain = load_model('simulated_Pos_10V')
-result = pd.read_csv('Result/RIKEN_PlaSMA_Pos_10.csv')
+msp_file = 'RIKEN_PlaSMA/RIKEN_PlaSMA_Neg.msp'
+model = load_model('RIKEN_PlaSMA_Neg_10')
+pretrain = load_model('simulated_Neg_10V')
+result = pd.read_csv('Result/RIKEN_PlaSMA_Neg_10.csv')
 
 # parser dataset
 ms = []
@@ -65,7 +64,7 @@ summary = pd.DataFrame({'smiles': smiles, 'ion_mode': modes, 'energy': energies}
 
 
 # example 1
-idx = 1297
+idx = 551
 smi = smiles[idx]
 mol = Chem.MolFromSmiles(smi)
 ms_pred = model_predict(smi, model)
@@ -75,7 +74,7 @@ ms_real = ms[idx]
 mzs = np.array(ms_pred['mz'])
 intensities = np.array(ms_pred['intensity'])
 mol = Chem.MolFromSmiles(smi)
-precursor = CalcExactMolWt(mol) + 1.0032
+precursor = CalcExactMolWt(mol) - 1.0032
 formula = CalcMolFormula(mol)
 frags = np.unique(generateFragments(smi, treeDepth=2))
 frags_new = [Chem.MolFromSmiles(s) for s in frags]

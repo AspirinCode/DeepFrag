@@ -45,11 +45,14 @@ def annotate_ms(ms_pred, smi, ion_mode='+', treeDepth=2):
         if check_formula(de_H):
             loss_formula.append(de_H)
     loss_formula = np.unique(loss_formula)
-    loss_mass = [getFormulaExactMass(f) for f in loss_formula]
+    loss_mass = np.array([getFormulaExactMass(f) for f in loss_formula])
     ms_new = pd.DataFrame(columns=['mz', 'intensity', 'annotate_loss', 'exact_mass'])
     for i, mz in enumerate(mzs):
         intensity = intensities[i]
         diff = precursor - mz
+        if abs(diff) < 0.5:
+            annotate_loss = ['precursor']
+            accurate_mass = [precursor]
         if min(np.abs(loss_mass - diff)) < 0.5:
             match = np.where(np.abs(loss_mass - diff) < 0.5)[0]
             annotate_loss = loss_formula[match]

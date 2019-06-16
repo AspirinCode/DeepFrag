@@ -67,7 +67,6 @@ t2 = time.time()
 ms_cfm = cfm_predict(smi, ionization_mode='-')
 t3 = time.time()
 ms_pretrain = model_predict(smi, pretrain)
-ms_anno, frags = annotate_ms(ms_pred, smi)
 ms_real = ms[idx]
 plot_compare_ms(ms_real, ms_pretrain)
 plot_compare_ms(ms_pretrain, ms_cfm['low_energy'])
