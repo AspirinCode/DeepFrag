@@ -18,11 +18,15 @@ numpy2ri.activate()
 robjects.r('''source('DeepFrag/metfrag.R')''')
 generateFragments = robjects.globalenv['generateFragments']
 
-def annotate_ms(ms_pred, smi, treeDepth=2):
+def annotate_ms(ms_pred, smi, ion_mode='+', treeDepth=2):
     mzs = np.array(ms_pred['mz'])
     intensities = np.array(ms_pred['intensity'])
     mol = Chem.MolFromSmiles(smi)
-    precursor = CalcExactMolWt(mol) + 1.0032
+    # only M+H and M-H is considered now.
+    if ion_mode=='+':
+        precursor = CalcExactMolWt(mol) + 1.0032
+    else:
+        precursor = CalcExactMolWt(mol) - 1.0032
     formula = CalcMolFormula(mol)
     frags = np.unique(generateFragments(smi, treeDepth=2))
     frags_new = np.array([Chem.MolFromSmiles(s) for s in frags])
