@@ -25,6 +25,6 @@ All scripts used for this work are included in the **Scripts** directory.
 **Scripts/annotation_example.py** and **Scripts/annotation_example2.py** are two examples explaining how to annotate the predicted spectra.   
 
 ### Graphical Interfaces
-This repo doesn't contain the model. One can download the whole DeepFrag at [url](https://pan.baidu.com/s/1zyQKVlLhdjstLOJSuIH_Pg). The extracted code is *zwsh*. Then use the graphical interfaces with
+This repo doesn't contain the model. One can download the whole DeepFrag at [url](https://figshare.com/articles/DeepFrag_zip/8323568). Then use the graphical interfaces with
     cd ../DeepFrag
     python DeepFragApp.py
