@@ -26,5 +26,6 @@ All scripts used for this work are included in the **Scripts** directory.
 
 ### Graphical Interfaces
 This repo doesn't contain the model. One can download the whole DeepFrag at [url](https://figshare.com/articles/DeepFrag_zip/8323568). Then use the graphical interfaces with
+
     cd ../DeepFrag
     python DeepFragApp.py
